@@ -23,7 +23,7 @@ List DLL_new() {
     return list;
 }
 
-// return the number of items in the list
+// return number of items in list
 int DLL_length(struct List *list) {
     struct Node *p;
     int n = 0;
@@ -34,6 +34,7 @@ int DLL_length(struct List *list) {
     return n;
 }
 
+// find a node in list
 Node* DLL_find(List* list, char* value) {
     Node *current = list->head;
     while (current != NULL) {
@@ -45,53 +46,56 @@ Node* DLL_find(List* list, char* value) {
     return NULL;
 }
 
+// insert node into list
 void DLL_insert(List* list, char* value) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = strdup(value);
-    newNode->next = NULL; // As it will be the last node
-    newNode->prev = list->tail; // Previous last node becomes the penultimate node
+    newNode->next = NULL;
+    newNode->prev = list->tail;
 
     if (list->tail != NULL) {
-        list->tail->next = newNode; // Update the old tail
+        list->tail->next = newNode; // update old tail
     } else {
-        list->head = newNode; // If the list was empty, new node is also the head
+        list->head = newNode;
     }
-    list->tail = newNode; // Update the tail to the new node
+    list->tail = newNode;
 }
 
+// delete a node from list
 void DLL_delete(List* list, char* value) {
     Node* temp = list->head;
     Node* prev = NULL;
 
-    // If the node to be deleted is the head
     if (temp != NULL && strcmp(temp->data, value) == 0) {
         list->head = temp->next;
         if (list->head == NULL) {
-            list->tail = NULL; // List is now empty
+            list->tail = NULL;
         }
         free(temp->data);
         free(temp);
         return;
     }
 
-    // Find the node to be deleted
+    // find node to be deleted
     while (temp != NULL && strcmp(temp->data, value) != 0) {
         prev = temp;
         temp = temp->next;
     }
 
-    // Node not found
+    // if node not found
     if (temp == NULL) return;
 
-    // Unlink node from list
+    // unlink node from list
     prev->next = temp->next;
+
     if (temp->next == NULL) {
-        list->tail = prev; // Update tail if last element was deleted
+        list->tail = prev; // update tail if last element was deleted
     }
     free(temp->data);
     free(temp);
 }
 
+// print entire list
 void DLL_print(List* list) {
     Node* current = list->head;
     if (current == NULL) {
@@ -109,22 +113,24 @@ void DLL_print(List* list) {
     printf("\n");
 }
 
+// clear entire list
 void DLL_clear(struct List *list) {
     Node* current = list->head;
     Node* next = NULL;
 
     while (current != NULL) {
         next = current->next;
-        free(current->data); // Free the node's data
-        free(current); // Free the node
+        free(current->data);
+        free(current);
         current = next;
     }
 
-    // Reset the head and tail pointers
+    // Reset head and tail pointers
     list->head = NULL;
     list->tail = NULL;
 }
 
+// function to clear user input buffer
 void clear_input_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) { }
@@ -143,7 +149,7 @@ int main() {
         printf("3. Find a value in DLL\n");
         printf("4. Clear DLL\n");
         printf("5. Quit\n");
-        DLL_print(&myList); // Display the list
+        DLL_print(&myList);
         printf("\nEnter your choice: ");
         scanf("%d", &choice);
         clear_input_buffer();
@@ -152,19 +158,19 @@ int main() {
             case 1:
                 printf("Enter value to insert: ");
                 fgets(value, 100, stdin);
-                value[strcspn(value, "\n")] = 0; // Remove newline character
+                value[strcspn(value, "\n")] = 0;
                 DLL_insert(&myList, value);
                 break;
             case 2:
                 printf("Enter value to delete: ");
                 fgets(value, 100, stdin);
-                value[strcspn(value, "\n")] = 0; // Remove newline character
+                value[strcspn(value, "\n")] = 0; 
                 DLL_delete(&myList, value);
                 break;
             case 3:
                 printf("Enter value to find: ");
                 fgets(value, 100, stdin);
-                value[strcspn(value, "\n")] = 0; // Remove newline character
+                value[strcspn(value, "\n")] = 0;
                 Node* found = DLL_find(&myList, value);
                 if (found != NULL) {
                     printf("Value '%s' found in the list.\n", value);
@@ -177,11 +183,11 @@ int main() {
                 printf("The list has been cleared.\n");
                 break;
             case 5:
-                DLL_clear(&myList); // Cleanup before exit
-                printf("Exiting...\n");
+                DLL_clear(&myList);
+                printf("Exiting\n");
                 return 0;
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf("Invalid choice, please try again.\n");
                 break;
         }
     }
